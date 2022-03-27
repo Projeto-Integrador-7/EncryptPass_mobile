@@ -6,6 +6,7 @@ import colors from '../../styles/colors';
 import { View } from 'react-native';
 
 interface CustomButtonProps {
+  width?: string
   title: string;
   onPress?: () => void;
   color: 'green' | 'red' | 'none';
@@ -15,7 +16,7 @@ interface CustomButtonProps {
   };
 }
 
-export function CustomButton({ color, title, onPress, icon, ...props }: CustomButtonProps) {
+export function CustomButton({ color, title, onPress, icon, width, ...props }: CustomButtonProps) {
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
   function onPressIn() {
@@ -28,6 +29,7 @@ export function CustomButton({ color, title, onPress, icon, ...props }: CustomBu
 
   return (
     <Button
+      width={width || '100%'}
       color={color}
       onPress={onPress}
       isPressed={isPressed}

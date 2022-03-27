@@ -5,6 +5,7 @@ import colors from "../../styles/colors";
 interface ButtonProps {
   color: 'green' | 'red' | 'none';
   isPressed: boolean;
+  width: string;
 }
 
 const btnColors = {
@@ -14,7 +15,7 @@ const btnColors = {
 }
 
 export const Button = styled.Pressable<ButtonProps>`
-  width: 100%;
+  width: ${(props) => props.width};
   height: 48px;
   background-color: ${(props) => btnColors[props.color]};
   border: ${(props) => props.color != 'none' ? 0 : '2px solid ' + colors.greenDark};
