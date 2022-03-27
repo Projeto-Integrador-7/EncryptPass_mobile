@@ -15,13 +15,18 @@ const btnColors = {
 
 export const Button = styled.Pressable<ButtonProps>`
   width: 100%;
-  height: 50px;
+  height: 48px;
   background-color: ${(props) => btnColors[props.color]};
   border: ${(props) => props.color != 'none' ? 0 : '2px solid ' + colors.greenDark};
   border-radius: 50px;
+  opacity: ${(props) => props.isPressed ? 0.8 : 1};
+`
+
+export const TextButtonContainer = styled.View`
+  flex: 1;
   justify-content: center;
   align-items: center;
-  opacity: ${(props) => props.isPressed ? 0.8 : 1};
+  flex-direction: row;
 `
 
 export const Text = styled.Text`

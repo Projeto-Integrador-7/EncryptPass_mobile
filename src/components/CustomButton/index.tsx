@@ -1,33 +1,48 @@
+import React from 'react';
 import { useState } from 'react';
-import { Button, Text } from './styles';
+import { Button, Text, TextButtonContainer } from './styles';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import colors from '../../styles/colors';
+import { View } from 'react-native';
 
 interface CustomButtonProps {
   title: string;
   onPress?: () => void;
   color: 'green' | 'red' | 'none';
+  icon?: {
+    icon: any,
+    color?: string
+  };
 }
 
-export function CustomButton({ color, title, onPress, ...props } : CustomButtonProps){
+export function CustomButton({ color, title, onPress, icon, ...props }: CustomButtonProps) {
   const [isPressed, setIsPressed] = useState<boolean>(false);
-  
-  function onPressIn(){
+
+  function onPressIn() {
     setIsPressed(true);
   }
 
-  function onPressOut(){
+  function onPressOut() {
     setIsPressed(false);
   }
 
-  return(
-    <Button 
+  return (
+    <Button
       color={color}
       onPress={onPress}
-      isPressed={isPressed} 
-      onPressIn={onPressIn} 
+      isPressed={isPressed}
+      onPressIn={onPressIn}
       onPressOut={onPressOut}
       {...props}
     >
-      <Text>{title}</Text>
+      <TextButtonContainer>
+        {icon !== undefined &&
+          <View style={{ marginRight: 5}}>
+            <Ionicons name={icon.icon} size={24} color={icon.color || colors.white} />
+          </View>
+        }
+        <Text>{title}</Text>
+      </TextButtonContainer>
     </Button>
   )
 }
