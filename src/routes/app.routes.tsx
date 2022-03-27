@@ -3,6 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import Dashboard from '../pages/Dashboard';
+import PasswordGenerator from '../pages/PasswordGenerator';
+
 import colors from '../styles/colors';
 
 export default function AppRoutes() {
@@ -21,7 +23,7 @@ export default function AppRoutes() {
           left: 20,
           right: 20,
           height: 65,
-          borderRadius: 25,
+          borderRadius: 50,
           backgroundColor: colors.gray,
           borderTopColor: 'transparent',
           elevation: 0
@@ -43,7 +45,7 @@ export default function AppRoutes() {
       />
       <AppTab.Screen
         name="PasswordGenerator"
-        component={Dashboard}
+        component={PasswordGenerator}
         options={{
           tabBarLabel: 'Gerador de Senhas',
           tabBarIcon: ({ color }) => (

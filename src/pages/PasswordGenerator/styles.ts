@@ -9,7 +9,3 @@ export const Container = styled.View`
   background-color: ${colors.background};
   padding: 20px;
 `
-
-export const Spacing = styled.View`
-   margin-bottom: 40px;
-`
