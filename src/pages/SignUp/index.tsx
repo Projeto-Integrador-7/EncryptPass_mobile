@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Stack } from "native-base";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -7,9 +7,11 @@ import { CustomInput } from "../../components/CustomInput";
 import { CustomButton } from "../../components/CustomButton";
 import { Logo } from "../../components/Logo";
 
-import { Container, FormContainer, ButtonContainer } from "./styles"
+import { ScrollView, Container, FormContainer, ButtonContainer } from "./styles"
 
 import { RootStackParamList } from "../../routes/auth.routes";
+import api from "../../services/api";
+import { Text } from "react-native";
 
 type SignUpProps = StackNavigationProp<RootStackParamList, 'SignUp'>;
 
@@ -17,42 +19,108 @@ export default function SignUp() {
   const navigation = useNavigation<SignUpProps>();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [step, setStep] = useState(0)
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [passwordReminder, setPasswordReminder] = useState<Boolean>();
+  const [passwordReminderTip, setPasswordRemindeTip] = useState('')
 
   function handleShowPassword() {
     setShowPassword(!showPassword)
   }
 
+  function handleNextStep() {
+    setStep(step + 1);
+  }
+
+  function handleBackStep() {
+    setStep(step - 1);
+  }
+
+  async function handleCreateAccount() {
+    try {
+      setPasswordReminder(passwordReminderTip !== null ? true : false);
+
+      const response = api.post('user/create', {
+        name,
+        email,
+        password,
+        phoneNumber,
+        passwordReminder,
+        passwordReminderTip
+      })
+
+      navigation.navigate('SignIn');
+
+    } catch (e) {
+
+    }
+  }
+
   return (
-    <Container>
-      <Logo />
-      <FormContainer>
-        <Stack space={4} width="100%">
-          <CustomInput
-            placeholder="Email"
-          />
-          <CustomInput
-            placeholder="Senha Master"
-            secureTextEntry={showPassword ? false : true}
-          />
-          <CustomInput
-            placeholder="Repita a Senha Master"
-            secureTextEntry={showPassword ? false : true}
-          />
-        </Stack>
-      </FormContainer>
-      <ButtonContainer>
-        <Stack space={4} width="100%">
-          <CustomButton
-            title="Cadastrar"
-            color="green"
-          />
-          <CustomButton
-            title="Cancelar"
-            color="red"
-            onPress={() => navigation.navigate('SignIn')}
-          />
-        </Stack>
-      </ButtonContainer>
-    </Container>
+    <ScrollView>
+      <Container>
+        <Logo />
+        <FormContainer>
+          <Stack space={4} width="100%">
+            {step == 0 &&
+              <>
+                <CustomInput
+                  placeholder="Nome"
+                  value={name}
+                  onChangeText={setName}
+                />
+                <CustomInput
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                />
+                <CustomInput
+                  placeholder="Telefone (Opcional)"
+                  value={phoneNumber}
+                  onChangeText={setPhoneNumber}
+                />
+              </>
+            }
+            {step === 1 &&
+              <>
+                <CustomInput
+                  placeholder="Senha Master"
+                  secureTextEntry={showPassword ? false : true}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <CustomInput
+                  placeholder="Repita a Senha Master"
+                  secureTextEntry={showPassword ? false : true}
+                />
+                <CustomInput
+                  placeholder="Dica de Senha (Opcional)"
+                  value={passwordReminderTip}
+                  onChangeText={setPasswordRemindeTip}
+                />
+              </>
+            }
+          </Stack>
+        </FormContainer>
+        <ButtonContainer>
+          <Stack space={4} width="100%">
+            <CustomButton
+              title={step > 0 ? "Cadastrar" : "Avançar"}
+              color="green"
+              onPress={step > 0 ? handleCreateAccount : handleNextStep}
+            />
+            <CustomButton
+              title={step < 1 ? "Cancelar" : "Voltar"}
+              color="red"
+              onPress={step < 1 ? () => navigation.navigate('SignIn') : handleBackStep}
+            />
+          </Stack>
+        </ButtonContainer>
+      </Container>
+    </ScrollView>
   )
 }

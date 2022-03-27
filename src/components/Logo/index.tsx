@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { useEffect, useState } from 'react';
 import { Image, Keyboard } from 'react-native';
 import { ImageContainer } from './styles';

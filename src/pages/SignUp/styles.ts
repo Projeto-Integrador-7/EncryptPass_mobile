@@ -2,6 +2,13 @@ import styled from "styled-components/native";
 
 import colors from "../../styles/colors";
 
+export const ScrollView = styled.ScrollView.attrs({
+  flexGrow: 1, 
+  justifyContent: 'center'
+})`
+  background-color: ${colors.background};
+`
+
 export const Container = styled.KeyboardAvoidingView`
   flex: 1;
   justify-content: center;

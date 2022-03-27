@@ -1,4 +1,6 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
+
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
@@ -15,7 +17,8 @@ export default function AuthRoutes() {
     <AuthStack.Navigator
       initialRouteName="SignIn"
       screenOptions={{
-        headerShown: false
+        headerShown: false,
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
       }}
     >
       <AuthStack.Screen name="SignIn" component={SignIn} />
