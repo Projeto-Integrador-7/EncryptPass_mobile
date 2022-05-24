@@ -1,9 +1,11 @@
-import { Input } from "./styles";
+import React from "react";
+import { NativeBaseInput } from "./styles";
 
 export function CustomInput({ ...props }){
   return(
-    <Input
+    <NativeBaseInput
       {...props}
+      variant="rounded"
     />
   )
 } 

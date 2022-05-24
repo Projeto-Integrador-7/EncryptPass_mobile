@@ -1,22 +1,27 @@
 import React from 'react';
 import { useState } from 'react';
-import { Button, Text, TextButtonContainer } from './styles';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import colors from '../../styles/colors';
 import { View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+import { Button, Text, TextButtonContainer } from './styles';
+
+import colors from '../../styles/colors';
 
 interface CustomButtonProps {
-  width?: string
+  width?: string;
+  height?: string;
   title: string;
   onPress?: () => void;
   color: 'green' | 'red' | 'none';
+  fontSize?: string;
+  noBorder?: true;
   icon?: {
     icon: any,
     color?: string
   };
 }
 
-export function CustomButton({ color, title, onPress, icon, width, ...props }: CustomButtonProps) {
+export function CustomButton({ color, title, onPress, icon, width, height, fontSize, noBorder, ...props }: CustomButtonProps) {
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
   function onPressIn() {
@@ -30,7 +35,9 @@ export function CustomButton({ color, title, onPress, icon, width, ...props }: C
   return (
     <Button
       width={width || '100%'}
+      height={height || '48px'}
       color={color}
+      border={noBorder ? false : true}
       onPress={onPress}
       isPressed={isPressed}
       onPressIn={onPressIn}
@@ -43,7 +50,7 @@ export function CustomButton({ color, title, onPress, icon, width, ...props }: C
             <Ionicons name={icon.icon} size={24} color={icon.color || colors.white} />
           </View>
         }
-        <Text>{title}</Text>
+        <Text fontSize={fontSize || '16px'}>{title}</Text>
       </TextButtonContainer>
     </Button>
   )

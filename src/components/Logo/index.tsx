@@ -23,11 +23,13 @@ export function Logo() {
 
   return (
     <ImageContainer>
-      <Image
-        style={{ width: keyboardStatus ? 250 : 150, height: keyboardStatus ? 125 : 75 }}
+      {keyboardStatus &&
+        <Image
+        style={{ width: 250, height: 125 }}
         resizeMode="stretch"
         source={require('../../images/logo-green.png')}
       />
+      }
     </ImageContainer>
   )
 }

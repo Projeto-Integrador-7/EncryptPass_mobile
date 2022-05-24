@@ -1,4 +1,5 @@
 export interface User {
+  _id: string;
   name: string;
   email: string;
   password: string;
@@ -8,6 +9,6 @@ export interface User {
 }
 
 export interface ResponseSignIn {
-  user?: User;
+  userWithRefreshToken?: User;
   token: string
 }

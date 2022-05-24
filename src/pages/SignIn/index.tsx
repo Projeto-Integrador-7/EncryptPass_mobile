@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import { Stack } from "native-base";
+import { FormControl, Icon, Stack } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { CustomInput } from "../../components/CustomInput";
 import { CustomButton } from "../../components/CustomButton";
-import { Logo } from "../../components/Logo";
 
-import { useAuth } from '../../contexts/auth';
+import { useAuth } from '../../contexts/useAuth';
 
-import { Container, FormContainer, ButtonContainer } from "./styles"
+import { Container, WelcomeContainer, WelcomeText, FormContainer, ButtonContainer, ValidationText } from "./styles"
 
-import { RootStackParamList } from "../../routes/auth.routes";
+import { RootStackParamList } from "../../models/RootStackParamList";
 
 type SignInProps = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -22,32 +22,73 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
 
   function handleShowPassword() {
     setShowPassword(!showPassword)
   }
 
+  function validate() {
+    setErrors({});
+
+    if (email === undefined || email === '') {
+      setErrors({
+        ...errors,
+        email: 'Error'
+      });
+
+    } 
+    
+    if (password === undefined || password === '') {
+      setErrors({
+        ...errors,
+        password: 'Error'
+      });
+
+    }
+
+    if(errors !== null){
+      return true
+    } else {
+      return false
+    }
+  }
+
   function handleSignIn() {
-    signIn(email, password)
+    validate() ? signIn(email, password) :  console.log('teste')
   }
 
   return (
     <Container>
-      <Logo />
       <FormContainer>
-        <Stack space={4} width="100%">
-          <CustomInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <CustomInput
-            placeholder="Senha Master"
-            secureTextEntry={showPassword ? false : true}
-            value={password}
-            onChangeText={setPassword}
-          />
-        </Stack>
+        <WelcomeContainer>
+          <WelcomeText>Olá, insira os dados abaixo para entrar.</WelcomeText>
+        </WelcomeContainer>
+        <FormControl isRequired isInvalid={('email' || 'password') in errors}>
+          <Stack space={4} width="100%">
+            <CustomInput
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChangeText={setEmail}
+            />
+            {'email' in errors && <ValidationText>E-mail é obrigatório</ValidationText>}
+            <CustomInput
+              placeholder="Senha Master"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChangeText={setPassword}
+              InputRightElement={<Icon
+                as={<MaterialIcons name={showPassword ? "visibility" : "visibility-off"} />}
+                size={5}
+                mr="5"
+                onPress={() => handleShowPassword()}
+              />
+              }
+            />
+            {'password' in errors && <ValidationText>Senha é obrigatória</ValidationText>}
+          </Stack>
+        </FormControl>
       </FormContainer>
       <ButtonContainer>
         <Stack space={4} width="100%">
@@ -57,9 +98,10 @@ export default function SignIn() {
             onPress={handleSignIn}
           />
           <CustomButton
-            title="Cadastrar"
+            title="Voltar"
             color="none"
-            onPress={() => navigation.navigate('SignUp')}
+            noBorder={true}
+            onPress={() => navigation.navigate('Welcome')}
           />
         </Stack>
       </ButtonContainer>
