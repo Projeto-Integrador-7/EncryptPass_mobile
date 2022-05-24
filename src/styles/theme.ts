@@ -8,6 +8,10 @@ const theme = extendTheme({
     primary: {
       400: colors.greenDark
     },
+    secondary: {
+      400: colors.gray,
+      500: colors.grayDark
+    }
   },
   config: {
     // Changing initialColorMode to 'dark'

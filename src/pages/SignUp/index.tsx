@@ -5,13 +5,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import { CustomInput } from "../../components/CustomInput";
 import { CustomButton } from "../../components/CustomButton";
-import { Logo } from "../../components/Logo";
 
-import { ScrollView, Container, FormContainer, ButtonContainer } from "./styles"
+import { ScrollView, StepperContainer, Stepper, StepperText, Container, FormContainer, ButtonContainer } from "./styles"
 
-import { RootStackParamList } from "../../routes/auth.routes";
+import { RootStackParamList } from "../../models/RootStackParamList";
+
 import api from "../../services/api";
-import { Text } from "react-native";
 
 type SignUpProps = StackNavigationProp<RootStackParamList, 'SignUp'>;
 
@@ -63,7 +62,15 @@ export default function SignUp() {
   return (
     <ScrollView>
       <Container>
-        <Logo />
+        <StepperContainer>
+          <Stack space={2} width="100%">
+            <Stepper>Passo {step + 1} de 2</Stepper>
+            <StepperText>
+              {step === 0 && 'Informações pessoais'}
+              {step === 1 && 'Configuração de senha'}
+            </StepperText>
+          </Stack>
+        </StepperContainer>
         <FormContainer>
           <Stack space={4} width="100%">
             {step == 0 &&
@@ -115,8 +122,9 @@ export default function SignUp() {
             />
             <CustomButton
               title={step < 1 ? "Cancelar" : "Voltar"}
-              color="red"
-              onPress={step < 1 ? () => navigation.navigate('SignIn') : handleBackStep}
+              color="none"
+              noBorder={true}
+              onPress={step < 1 ? () => navigation.navigate('Welcome') : handleBackStep}
             />
           </Stack>
         </ButtonContainer>

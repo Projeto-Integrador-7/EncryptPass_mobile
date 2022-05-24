@@ -1,17 +1,13 @@
 import React from "react";
-import { Container, TextContainer, Title } from "./styles";
+import { Container } from "./styles";
 
 interface PageContainerProps {
-  title: string;
   children: React.ReactNode;
 }
 
-export function PageContainer({ title, children } : PageContainerProps){
+export function PageContainer({ children } : PageContainerProps){
   return(
     <Container>
-      <TextContainer>
-        <Title>{title}</Title>
-      </TextContainer>
       {children}
     </Container>
   )

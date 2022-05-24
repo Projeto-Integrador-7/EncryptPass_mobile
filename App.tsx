@@ -9,7 +9,8 @@ import React from 'react';
 import theme from './src/styles/theme';
 import colors from './src/styles/colors';
 
-import { AuthProvider } from './src/contexts/auth';
+import { AuthProvider } from './src/contexts/useAuth';
+import { FolderProvider } from './src/contexts/useFolder';
 
 export default function App() {
   return (
@@ -20,7 +21,9 @@ export default function App() {
           style="light"
         />
         <AuthProvider>
-          <Routes />
+          <FolderProvider>
+            <Routes />
+          </FolderProvider>
         </AuthProvider>
       </NavigationContainer>
     </NativeBaseProvider>

@@ -1,17 +1,25 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { NavigationContainer } from '@react-navigation/native';
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 
 import Dashboard from '../pages/Dashboard';
 import PasswordGenerator from '../pages/PasswordGenerator';
+import CreateFolder from '../pages/CreateFolder';
+import Credentials from '../pages/Credentials';
+import CreateFolderPassword from '../pages/CreateFolderPassword';
+
+import { RootStackParamList } from '../models/RootStackParamList';
 
 import colors from '../styles/colors';
 
-export default function AppRoutes() {
+function Tabs() {
   const AppTab = createBottomTabNavigator();
 
   return (
     <AppTab.Navigator
+      initialRouteName="Dashboard"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.white,
@@ -64,5 +72,26 @@ export default function AppRoutes() {
         }}
       />
     </AppTab.Navigator>
+  )
+}
+
+export default function AppRoutes() {
+  const AuthStack = createStackNavigator<RootStackParamList>();
+
+  return (
+    <NavigationContainer independent>
+      <AuthStack.Navigator
+        initialRouteName="Tabs"
+        screenOptions={{
+          headerShown: false,
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+      >
+        <AuthStack.Screen name="Tabs" component={Tabs} />
+        <AuthStack.Screen name="CreateFolder" component={CreateFolder} />
+        <AuthStack.Screen name="Credentials" component={Credentials} />
+        <AuthStack.Screen name="CreateFolderPassword" component={CreateFolderPassword} />
+      </AuthStack.Navigator>
+    </NavigationContainer>
   )
 }
