@@ -36,7 +36,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     loadFolders();
-  }, [loadFolders])
+  }, [])
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
     defaultValues: {

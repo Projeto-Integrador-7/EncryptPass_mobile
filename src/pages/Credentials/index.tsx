@@ -176,7 +176,7 @@ export default function CredentialsFolderView() {
                 type="text"
                 value={value}
                 onChangeText={onChange}
-                isInvalid={Boolean(errors.login)}
+                isInvalid={Boolean(errors.url)}
                 helperText="Exemplo: https://unipam.edu.br"
               />
             )}
