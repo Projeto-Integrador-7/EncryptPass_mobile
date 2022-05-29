@@ -11,7 +11,7 @@ import { useAuth } from '../../contexts/useAuth';
 
 import { Container, WelcomeContainer, WelcomeText, FormContainer, ButtonContainer, ValidationText } from "./styles"
 
-import { RootStackParamList } from "../../models/RootStackParamList";
+import { RootStackParamList } from "../../models/rootStackParamList";
 
 type SignInProps = StackNavigationProp<RootStackParamList, 'SignIn'>;
 

@@ -30,6 +30,7 @@ export const IconBackground = styled.View`
   background-color: ${colors.white};
   padding: 5px;
   border-radius: 50px;
+  margin-right: 12px;
 `
 
 export const Icon = styled.Image`

@@ -6,7 +6,7 @@ import Welcome from '../pages/Welcome';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 
-import { RootStackParamList } from '../models/RootStackParamList';
+import { RootStackParamList } from '../models/rootStackParamList';
 
 export default function AuthRoutes() {
   const AuthStack = createStackNavigator<RootStackParamList>();

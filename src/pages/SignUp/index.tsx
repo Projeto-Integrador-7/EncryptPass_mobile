@@ -8,14 +8,15 @@ import { CustomButton } from "../../components/CustomButton";
 
 import { ScrollView, StepperContainer, Stepper, StepperText, Container, FormContainer, ButtonContainer } from "./styles"
 
-import { RootStackParamList } from "../../models/RootStackParamList";
+import { RootStackParamList } from "../../models/rootStackParamList";
 
-import api from "../../services/api";
+import useAxios from "../../hooks/useAxios";
 
 type SignUpProps = StackNavigationProp<RootStackParamList, 'SignUp'>;
 
 export default function SignUp() {
   const navigation = useNavigation<SignUpProps>();
+  const api = useAxios();
 
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState(0)

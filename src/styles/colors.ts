@@ -3,12 +3,13 @@ const colors = {
 
     white: '#FFFFFF',
     gray: '#494848',
-    red: '#E52E4D',
+    red: '#EF4444',
 
     grayDark: '#3D3C3C',
     greenDark: '#1A6855',
 
     text: '#FFFFFF',
+    placeHolderText: '#CDCDCD'
 };
 
 

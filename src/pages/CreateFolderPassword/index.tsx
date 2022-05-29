@@ -9,7 +9,7 @@ import { PageContainer } from "../../components/PageContainer";
 import { CustomInput } from "../../components/CustomInput";
 import { CustomButton } from "../../components/CustomButton";
 
-import { RootStackParamList } from "../../models/RootStackParamList";
+import { RootStackParamList } from "../../models/rootStackParamList";
 
 import { ButtonContainer } from "./styles";
 

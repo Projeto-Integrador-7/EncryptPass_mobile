@@ -5,12 +5,11 @@ import { Card, Container, Text } from "./styles";
 interface CardPasswordFolderProps {
   title: string;
   onPress?: () => void;
-  myKey: string;
 }
 
-export function CardPasswordFolder({ myKey, title, onPress } : CardPasswordFolderProps){
+export function CardPasswordFolder({ title, onPress } : CardPasswordFolderProps){
   return(
-    <Card key={myKey}>
+    <Card>
       <Container>
         <Text>{title}</Text>
         <CustomButton 

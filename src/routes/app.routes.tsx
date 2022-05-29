@@ -6,11 +6,10 @@ import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/
 
 import Dashboard from '../pages/Dashboard';
 import PasswordGenerator from '../pages/PasswordGenerator';
-import CreateFolder from '../pages/CreateFolder';
 import Credentials from '../pages/Credentials';
 import CreateFolderPassword from '../pages/CreateFolderPassword';
 
-import { RootStackParamList } from '../models/RootStackParamList';
+import { RootStackParamList } from '../models/rootStackParamList';
 
 import colors from '../styles/colors';
 
@@ -88,7 +87,6 @@ export default function AppRoutes() {
         }}
       >
         <AuthStack.Screen name="Tabs" component={Tabs} />
-        <AuthStack.Screen name="CreateFolder" component={CreateFolder} />
         <AuthStack.Screen name="Credentials" component={Credentials} />
         <AuthStack.Screen name="CreateFolderPassword" component={CreateFolderPassword} />
       </AuthStack.Navigator>
