@@ -8,6 +8,8 @@ const colors = {
     grayDark: '#3D3C3C',
     greenDark: '#1A6855',
 
+    grayLight: '#9a9898',
+
     text: '#FFFFFF',
     placeHolderText: '#CDCDCD'
 };

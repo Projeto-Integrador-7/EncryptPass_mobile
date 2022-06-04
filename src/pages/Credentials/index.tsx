@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from 'react';
+import { ScrollView } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from "@expo/vector-icons";
-import { Spacing } from './styles';
+import { Icon, Stack } from 'native-base';
+import { Controller, useForm } from 'react-hook-form';
+import { Container, RemoveText, Spacing } from './styles';
 
 import { PageBody } from "../../components/PageBody";
 import { PageContainer } from "../../components/PageContainer";
 import { CustomButton } from '../../components/CustomButton';
-
+import { CustomToast } from '../../components/CustomToast';
 import { CardPassword } from '../../components/CardPassword';
+import { CustomModal } from '../../components/CustomModal';
+import { CustomInput } from '../../components/CustomInput';
+import { CardPasswordSkeleton } from '../../components/CardsSkeleton';
+
 import { RootStackParamList } from "../../models/rootStackParamList";
 import { Credentials } from '../../models/credentials';
 
 import { useAuth } from '../../contexts/useAuth';
-import useAxios from '../../hooks/useAxios';
-import { CustomModal } from '../../components/CustomModal';
-import { Icon, Stack } from 'native-base';
-import { Controller, useForm } from 'react-hook-form';
-import { CustomInput } from '../../components/CustomInput';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { useToast } from "native-base";
 
 type CredentialsPageProps = StackNavigationProp<RootStackParamList, 'Credentials'>;
 
@@ -29,25 +33,42 @@ type FormData = {
 };
 
 export default function CredentialsFolderView() {
+  const { session } = useAuth();
+  const api = useAxiosPrivate();
   const navigation = useNavigation<CredentialsPageProps>();
   const route = useRoute<RouteProp<RootStackParamList, 'Credentials'>>();
-  const { session } = useAuth();
-  const api = useAxios();
+  const toast = useToast();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [credentials, setCredentials] = useState<Credentials[]>([])
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalLoading, setModalLoading] = useState(false);
+  const [credentials, setCredentials] = useState<Credentials[]>([]);
+  const [credentialsLoading, setCredentialsLoading] = useState(true);
+  const [currentCredential, setCurrentCredential] = useState<Credentials>();
+
+  const [modalCEOpen, setModalCEOpen] = useState(false);
+  const [modalCELoading, setModalCELoading] = useState(false);
+
+  const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+  const [modalDeleteLoading, setModalDeleteLoading] = useState(false);
+
+  const [modalType, setModalType] = useState('create' || 'edit');
+
+  useEffect(() => {
+    const unsubscribe = () => { };
+
+    return unsubscribe;
+  }, [navigation])
 
   useEffect(() => {
     async function loadData() {
       const response = await api.get(`credentials/${session?.user._id}/${route.params._id}`);
-      setCredentials(response.data)
+      setCredentials(response.data.credentials);
+      setCredentialsLoading(false);
     }
     loadData();
   }, [])
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+
+  const { control, handleSubmit, reset, setValue, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       title: '',
       url: '',
@@ -56,14 +77,147 @@ export default function CredentialsFolderView() {
     }
   })
 
-  const onSubmit = async (data: FormData) => {
-    setModalLoading(true);
-    setModalOpen(false);
-    setModalLoading(false);
+  useEffect(() => {
+    if (currentCredential) {
+      setValue('title', currentCredential.title);
+      setValue('url', currentCredential.url);
+      setValue('login', currentCredential.login);
+      setValue('password', currentCredential.password);
+    }
+  }, [currentCredential])
+
+  const onCreate = async (data: FormData) => {
+    setModalCELoading(true);
+    try {
+      const response = await api.post(`credentials/${session?.user._id}/create`, {
+        title: data.title,
+        url: data.url,
+        login: data.login,
+        password: data.password,
+        folderId: route.params._id
+      });
+
+      setCredentials([
+        ...credentials,
+        response.data.credentials
+      ])
+
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="success"
+              description={response.data.Sucesso}
+            />
+          )
+        }
+      });
+
+      handleCloseCEModal();
+    } catch (res: any) {
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="error"
+              description={res.response.data.Erro}
+            />
+          )
+        }
+      });
+    }
+
+    setModalCELoading(false);
   };
 
-  function handleCloseModal() {
-    setModalOpen(false);
+  const onEdit = async (data: FormData) => {
+    setModalCELoading(true);
+    try {
+      const response = await api.put(`credentials/${session?.user._id}/update/${currentCredential?._id}`, {
+        title: data.title,
+        url: data.url,
+        login: data.login,
+        password: data.password
+      });
+
+      let elementIndex = credentials.findIndex(item => item._id === currentCredential?._id);
+
+
+      let updateCredentials = [...credentials];
+      updateCredentials[elementIndex] = response.data.credentials
+
+      setCredentials(updateCredentials)
+
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="success"
+              description={response.data.Sucesso}
+            />
+          )
+        }
+      });
+
+      handleCloseCEModal()
+    } catch (res: any) {
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="error"
+              description={res.response.data.Erro}
+            />
+          )
+        }
+      });
+    }
+
+    setModalCELoading(false);
+  };
+
+  const onDelete = async (data: FormData) => {
+    setModalDeleteLoading(true);
+    try {
+      const response = await api.delete(`credentials/${session?.user._id}/delete/${currentCredential?._id}`);
+
+      let elementIndex = credentials.findIndex(item => item._id === currentCredential?._id);
+
+      let deleteCredentials = credentials;
+      deleteCredentials.splice(elementIndex, 1)
+
+      setCredentials(deleteCredentials)
+
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="success"
+              description={response.data.Sucesso}
+            />
+          )
+        }
+      });
+
+      setModalDeleteOpen(false)
+    } catch (res: any) {
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="error"
+              description={res.response.data.Erro}
+            />
+          )
+        }
+      });
+    }
+
+    setModalDeleteLoading(false);
+  };
+
+  function handleCloseCEModal() {
+    setModalCEOpen(false);
     reset();
   }
 
@@ -78,11 +232,15 @@ export default function CredentialsFolderView() {
         title={route.params.title}
         onPress={() => navigation.navigate('Tabs', { Dashboard: undefined })}
         back={true}
+        marginBottom={false}
       >
         <CustomButton
           title="Adicionar"
           color="green"
-          onPress={() => setModalOpen(true)}
+          onPress={() => {
+            setModalType('create');
+            setModalCEOpen(true);
+          }}
           icon={{
             icon: 'add'
           }}
@@ -90,16 +248,49 @@ export default function CredentialsFolderView() {
 
         <Spacing />
 
-        <CardPassword title="Netflix" />
+        <ScrollView persistentScrollbar={true}>
+          {credentialsLoading ?
+            <CardPasswordSkeleton repeat={1} />
+            :
+            <Container>
+              <Stack space={4} width="100%">
+                {credentials.map((credential, key) => (
+                  <CardPassword
+                    key={key}
+                    title={credential.title}
+                    login={credential.login}
+                    password={credential.password}
+                    url={credential.url}
+                    edit={() => {
+                      setModalType('edit');
+                      setCurrentCredential(credential);
+                      setModalCEOpen(true);
+                    }}
+                    remove={() => {
+                      setCurrentCredential(credential);
+                      setModalDeleteOpen(true);
+                    }}
+                  />
+                ))}
+              </Stack>
+            </Container>
+          }
+        </ScrollView>
 
       </PageBody>
 
+      {/* MODAL CRIANDO/EDITANDO SENHA: INCIO */}
       <CustomModal
-        title="Criando Pasta"
-        isOpen={modalOpen}
-        onClose={handleCloseModal}
-        onPress={handleSubmit(onSubmit)}
-        isLoading={modalLoading}
+        title={modalType === 'create' ? "Criando Senha" : "Editando " + currentCredential?.title}
+        isOpen={modalCEOpen}
+        onClose={handleCloseCEModal}
+        onPress={modalType === 'create' ? handleSubmit(onCreate) : handleSubmit(onEdit)}
+        isLoading={modalCELoading}
+        button={{
+          text: modalType === 'create' ? 'Criar' : 'Editar',
+          loadingText: modalType === 'create' ? 'Criando...' : 'Editando...',
+          color: 'green'
+        }}
       >
         <Stack space={4} width="100%">
           <Controller
@@ -116,7 +307,10 @@ export default function CredentialsFolderView() {
               />
             )}
             rules={{
-              required: true,
+              required: {
+                value: true,
+                message: 'Informe um nome'
+              },
               minLength: {
                 value: 3,
                 message: "O nome deve conter no mínimo 3 caracteres"
@@ -129,7 +323,7 @@ export default function CredentialsFolderView() {
             control={control}
             render={({ field: { onChange, value } }) => (
               <CustomInput
-                placeholder="Login/Usuário *"
+                placeholder="E-mail/Usuário *"
                 type="text"
                 value={value}
                 onChangeText={onChange}
@@ -138,7 +332,10 @@ export default function CredentialsFolderView() {
               />
             )}
             rules={{
-              required: true,
+              required: {
+                value: true,
+                message: 'Informe um e-mail/usuário'
+              }
             }}
           />
 
@@ -163,7 +360,10 @@ export default function CredentialsFolderView() {
               />
             )}
             rules={{
-              required: true,
+              required: {
+                value: true,
+                message: 'Informe uma senha'
+              }
             }}
           />
 
@@ -187,6 +387,26 @@ export default function CredentialsFolderView() {
 
         </Stack>
       </CustomModal>
-    </PageContainer>
+      {/* MODAL CRIANDO/EDITANDO SENHA: FIM */}
+
+      {/* MODAL EXCLUINDO SENHA: INCIO */}
+      <CustomModal
+        title={"Excluindo " + currentCredential?.title}
+        isOpen={modalDeleteOpen}
+        onClose={() => setModalDeleteOpen(false)}
+        onPress={handleSubmit(onDelete)}
+        isLoading={modalDeleteLoading}
+        button={{
+          text: 'Excluir',
+          loadingText: 'Excluindo...',
+          color: 'red'
+        }}
+      >
+        <RemoveText>Você realmente deseja excluir {currentCredential?.title}? Essa ação não poderá ser desfeita.</RemoveText>
+      </CustomModal>
+      {/* MODAL EXCLUINDO SENHA: FIM */}
+
+
+    </PageContainer >
   )
 }

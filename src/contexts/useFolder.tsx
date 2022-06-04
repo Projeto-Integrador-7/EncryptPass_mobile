@@ -5,7 +5,7 @@ import { CustomToast } from "../components/CustomToast";
 import { Folder } from "../models/folder";
 
 import { useAuth } from "./useAuth";
-import useAxios from "../hooks/useAxios";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 interface FolderContextData {
   folders: Folder[];
@@ -21,7 +21,7 @@ const FolderContext = createContext<FolderContextData>({} as FolderContextData);
 
 export function FolderProvider({ ...props }) {
   const { session } = useAuth();
-  const api = useAxios();
+  const api = useAxiosPrivate();
   const toast = useToast();
 
   const [folders, setFolders] = useState<Folder[]>([]);

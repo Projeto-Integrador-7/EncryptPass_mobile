@@ -14,7 +14,7 @@ export function CustomInput({ helperText, errorText, ...props } : CustomInputPro
         variant="rounded"
         {...props}
       />
-      {errorText && <ErrorText>{errorText}</ErrorText>}
+      {errorText !== undefined && <ErrorText>{errorText}</ErrorText>}
       {errorText === undefined && (helperText && <HelperText>{helperText}</HelperText>)}
     </>
   )

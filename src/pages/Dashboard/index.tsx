@@ -9,15 +9,17 @@ import { CardPasswordFolder } from "../../components/CardPasswordFolder";
 import { CustomButton } from "../../components/CustomButton";
 import { PageBody } from "../../components/PageBody";
 import { PageContainer } from "../../components/PageContainer";
+import { CardPasswordFolderSkeleton } from "../../components/CardsSkeleton";
 
 import { Container, Spacing } from "./styles";
 
 import { RootStackParamList } from "../../models/rootStackParamList";
 
-import { useAuth } from "../../contexts/useAuth";
 import { useFolder } from "../../contexts/useFolder";
 import { CustomModal } from "../../components/CustomModal";
 import { CustomInput } from "../../components/CustomInput";
+
+import { useAuth } from "../../contexts/useAuth";
 
 type DashboardProps = StackNavigationProp<RootStackParamList>;
 
@@ -29,7 +31,7 @@ type FormData = {
 export default function Dashboard() {
   const navigation = useNavigation<DashboardProps>();
   const { signOut } = useAuth();
-  const { folders, loadFolders, createFolder } = useFolder();
+  const { folders, loadFolders, createFolder, folderLoading } = useFolder();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
@@ -71,17 +73,21 @@ export default function Dashboard() {
         />
         <Spacing />
         <ScrollView persistentScrollbar={true}>
-          <Container>
-            <Stack space={4} width="100%">
-              {folders.map((folder, key) => (
-                <CardPasswordFolder
-                  key={folder._id}
-                  title={folder.title}
-                  onPress={() => navigation.navigate('Credentials', { _id: folder._id, title: folder.title })}
-                />
-              ))}
-            </Stack>
-          </Container>
+          {folderLoading ?
+            <CardPasswordFolderSkeleton repeat={5} />
+            :
+            <Container>
+              <Stack space={4} width="100%">
+                {folders.map((folder, key) => (
+                  <CardPasswordFolder
+                    key={key}
+                    title={folder.title}
+                    onPress={() => navigation.navigate('Credentials', { _id: folder._id, title: folder.title })}
+                  />
+                ))}
+              </Stack>
+            </Container>
+          }
         </ScrollView>
       </PageBody>
 
@@ -91,6 +97,9 @@ export default function Dashboard() {
         onClose={handleCloseModal}
         onPress={handleSubmit(onSubmit)}
         isLoading={modalLoading}
+        button={{
+          color: 'green'
+        }}
       >
         <Stack space={4} width="100%">
           <Controller
@@ -107,7 +116,10 @@ export default function Dashboard() {
               />
             )}
             rules={{
-              required: true,
+              required: {
+                value: true,
+                message: 'Informe um nome'
+              },
               minLength: {
                 value: 3,
                 message: "O nome deve conter no mínimo 3 caracteres"
@@ -129,7 +141,10 @@ export default function Dashboard() {
               />
             )}
             rules={{
-              required: true,
+              required: {
+                value: true,
+                message: 'Informe uma descrição'
+              },
               minLength: {
                 value: 3,
                 message: "A descrição deve ter no mínimo 3 caracteres"

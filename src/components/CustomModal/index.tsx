@@ -10,9 +10,19 @@ interface CustomModalProps {
   isLoading: boolean;
   onClose: any;
   onPress: ((event: GestureResponderEvent) => void);
+  button: {
+    text?: string;
+    loadingText?: string;
+    color: 'green' | 'red'
+  }
 }
 
-export function CustomModal({ title, children, isOpen, isLoading, onClose, onPress }: CustomModalProps) {
+const btnColors = {
+  green: "primary.400",
+  red: "red.400"
+}
+
+export function CustomModal({ title, children, isOpen, isLoading, onClose, button, onPress }: CustomModalProps) {
   return (
     <Modal
       isOpen={isOpen}
@@ -47,11 +57,11 @@ export function CustomModal({ title, children, isOpen, isLoading, onClose, onPre
               rounded="full"
               paddingLeft={5}
               paddingRight={5}
-              backgroundColor="primary.400"
+              backgroundColor={btnColors[button.color]}
               isLoading={isLoading}
-              isLoadingText="Criando..."
+              isLoadingText={button?.loadingText || "Criando..."}
             >
-              Criar
+              {button?.text || "Criar"}
             </Button>
           </ButtonContainer>
         </Modal.Footer>

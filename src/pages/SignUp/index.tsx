@@ -10,13 +10,13 @@ import { ScrollView, StepperContainer, Stepper, StepperText, Container, FormCont
 
 import { RootStackParamList } from "../../models/rootStackParamList";
 
-import useAxios from "../../hooks/useAxios";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 type SignUpProps = StackNavigationProp<RootStackParamList, 'SignUp'>;
 
 export default function SignUp() {
   const navigation = useNavigation<SignUpProps>();
-  const api = useAxios();
+  const api = useAxiosPrivate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState(0)

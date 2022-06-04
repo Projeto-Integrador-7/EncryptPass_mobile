@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AxiosResponse, HeadersDefaults } from 'axios';
+import { AxiosResponse } from 'axios';
 
 import { ResponseSignIn } from "../models/user";
 import { Session } from "../models/session";
 
-import useAxios from "../hooks/useAxios";
+import { publicAPI } from "../services/publicAPI";
 
 interface AuthContextData {
   signed: boolean;
@@ -23,14 +23,9 @@ interface AuthContextData {
   ) => void,
 }
 
-interface CommonHeaderProperties extends HeadersDefaults {
-  Authorization: string;
-}
-
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function AuthProvider({ ...props }) {
-  const api = useAxios();
   const [session, setSession] = useState<Session>();
   const [loading, setLoading] = useState(true);
 
@@ -44,13 +39,15 @@ export function AuthProvider({ ...props }) {
         setSession(JSON.parse(storegedSession));
         setLoading(false);
       }
+
+      setLoading(false);
     }
 
     loadStoregedData();
   }, []);
 
   async function signIn(email: string, password: string) {
-    const response = await api.post<ResponseSignIn>("user/login", { email, password });
+    const response = await publicAPI.post<ResponseSignIn>("user/login", { email, password });
     if (response.data) {
       setSession({
         user: {
@@ -88,17 +85,20 @@ export function AuthProvider({ ...props }) {
 
 
   async function updateToken(expiresIn: number, _id: string, token: string) {
-    await AsyncStorage.setItem("auth-session", JSON.stringify({
+    const newData : Session = {
       user: {
-        _id: session?.user._id,
-        name: session?.user.name,
+        _id: String(session?.user._id),
+        name: String(session?.user.name),
       },
       refreshToken: {
         _id: _id,
         expiresIn: expiresIn
       },
       token: token
-    }));
+    }
+
+    await AsyncStorage.setItem("auth-session", JSON.stringify(newData));
+    setSession(newData);
   }
 
   return (

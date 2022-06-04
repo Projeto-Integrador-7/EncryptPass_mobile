@@ -4,7 +4,7 @@ import colors from "../../styles/colors";
 
 export const Card = styled.View`
   width: 100%;
-  height: 150px;
+  min-height: 200px;
   background-color: ${colors.grayDark};
   border-radius: 50px;
   padding: 20px;
@@ -33,13 +33,13 @@ export const IconBackground = styled.View`
   margin-right: 12px;
 `
 
-export const Icon = styled.Image`
+export const Favicon = styled.Image`
   width: 25px;
   height: 25px;
 `
 
-export const PasswordContainer = styled.View`
-  flex: 1;
+export const CredentialsContainer = styled.View`
+  display: flex;
   width: 100%;
   justify-content: space-between;
   flex-direction: column;
@@ -51,7 +51,7 @@ export const Text = styled.Text`
   font-size: 16px;
 `
 
-export const PasswordText = styled.Text`
+export const CredentialsText = styled.Text`
   color: ${colors.white};
   font-size: 12px;
 `

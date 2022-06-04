@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { Button, Text, TextButtonContainer } from './styles';
 
@@ -10,7 +10,7 @@ import colors from '../../styles/colors';
 interface CustomButtonProps {
   width?: string;
   height?: string;
-  title: string;
+  title?: string;
   onPress?: () => void;
   color: 'green' | 'red' | 'none';
   fontSize?: string;
@@ -18,6 +18,7 @@ interface CustomButtonProps {
   icon?: {
     icon: any,
     color?: string
+    size?: number;
   };
 }
 
@@ -46,8 +47,8 @@ export function CustomButton({ color, title, onPress, icon, width, height, fontS
     >
       <TextButtonContainer>
         {icon !== undefined &&
-          <View style={{ marginRight: 5}}>
-            <Ionicons name={icon.icon} size={24} color={icon.color || colors.white} />
+          <View style={{ marginRight: title ? 5 : 0 }}>
+            <MaterialIcons name={icon.icon} size={icon.size || 24} color={icon.color || colors.white} />
           </View>
         }
         <Text fontSize={fontSize || '16px'}>{title}</Text>

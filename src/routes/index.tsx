@@ -1,18 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AuthRoutes from "./auth.routes";
 import AppRoutes from "./app.routes";
+import * as SplashScreen from "expo-splash-screen";
 
 import { useAuth } from '../contexts/useAuth';
-import { Text } from "react-native";
+import Loading from "../components/Loading";
 
-export default function Routes(){
+export default function Routes() {
   const { signed, loading } = useAuth();
 
-  if(loading && signed === true) {
-    return <Text>Aguarde</Text>
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+
+    async function hidden() {
+      await SplashScreen.hideAsync();
+    }
+
+    if (loading) {
+      prepare();
+    } else {
+      hidden();
+    }
+  }, [loading])
+
+  if (loading) {
+    return <Loading />;
   }
 
-  return(
+  return (
     signed ? <AppRoutes /> : <AuthRoutes />
   )
 }

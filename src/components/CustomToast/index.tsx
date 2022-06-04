@@ -14,7 +14,7 @@ const toastColors = {
 export function CustomToast({ description, type }: CustomToastProps) {
 
   return (
-    <Box bg={toastColors[type]} px="3" py="3" rounded="sm" mb={2}>
+    <Box bg={toastColors[type]} px="6" py="3" rounded="full" mb={2}>
       {description}
     </Box>
   )
