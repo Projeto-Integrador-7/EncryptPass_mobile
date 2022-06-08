@@ -2,6 +2,7 @@ export type RootTabParamList = {
   Dashboard?: undefined;
   PasswordGenerator?: undefined;
   Settings?: undefined;
+  Profile?: undefined;
 }
 
 export type RootStackParamList = {
@@ -13,9 +14,8 @@ export type RootStackParamList = {
     _id: string;
     title: string;
   }
-  CreateFolderPassword: {
-    _id: string;
-    title: string;
-  };
+  Profile: undefined;
+  EditProfile: undefined;
+  ChangePassword: undefined;
   Tabs: RootTabParamList;
 }

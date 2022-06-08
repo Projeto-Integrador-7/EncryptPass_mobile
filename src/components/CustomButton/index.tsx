@@ -20,9 +20,10 @@ interface CustomButtonProps {
     color?: string
     size?: number;
   };
+  disabled?: boolean;
 }
 
-export function CustomButton({ color, title, onPress, icon, width, height, fontSize, noBorder, ...props }: CustomButtonProps) {
+export function CustomButton({ color, title, onPress, icon, width, height, fontSize, noBorder, disabled, ...props }: CustomButtonProps) {
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
   function onPressIn() {
@@ -43,6 +44,7 @@ export function CustomButton({ color, title, onPress, icon, width, height, fontS
       isPressed={isPressed}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
+      disabled={disabled}
       {...props}
     >
       <TextButtonContainer>

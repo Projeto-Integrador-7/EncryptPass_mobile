@@ -26,6 +26,12 @@ export const Title = styled.Text`
   color: #FFFFFF;
 `
 
+export const Description = styled.Text`
+  margin-top: 5px;
+  font-size: 16px;
+  color: #FFFFFF;
+`
+
 export const TitleAndBackBtn = styled.View`
   flex-direction: row;
   align-items: center;

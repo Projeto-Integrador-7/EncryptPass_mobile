@@ -3,7 +3,7 @@ import { Slider, Stack, useClipboard, useToast } from "native-base";
 
 import { PageBody } from "../../components/PageBody";
 import { PageContainer } from "../../components/PageContainer";
-import { CheckB, CheckboxContainer, PasswordField, PasswordSize, SlideContainer, Text } from "./styles";
+import { ButtonContainer, CheckB, CheckboxContainer, PasswordField, PasswordSize, SlideContainer, Text } from "./styles";
 import { CustomButton } from "../../components/CustomButton";
 import { CustomToast } from "../../components/CustomToast";
 
@@ -21,12 +21,6 @@ export default function PasswordGenerator() {
   useEffect(() => {
     generatePassword()
   }, [])
-
-  useEffect(() => {
-    setTimeout(() => {
-      generatePassword()
-    }, 200)
-  }, [sliderValue, upperEnabled, lowerEnabled, numbersEnabled, symbolsEnabled])
 
   function upperLetters() {
     let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -91,11 +85,7 @@ export default function PasswordGenerator() {
             maxValue={50}
             paddingRight={2}
             onChange={value => {
-              let sliderTimeoutId;
-              clearTimeout(sliderTimeoutId)
-              sliderTimeoutId = setTimeout(() => {
-                setSliderValue(value)
-              }, 100)
+              setSliderValue(value)
             }}
           >
             <Slider.Track>
@@ -140,6 +130,13 @@ export default function PasswordGenerator() {
             </CheckB>
           </Stack>
         </CheckboxContainer>
+        <ButtonContainer>
+          <CustomButton
+            title="Gerar Senha"
+            color="green"
+            onPress={generatePassword}
+          />
+        </ButtonContainer>
         <PasswordField>
           <Text align="left">{password.length !== 0 ? password : 'Selecione uma opção em configuração de senha.'}</Text>
         </PasswordField>

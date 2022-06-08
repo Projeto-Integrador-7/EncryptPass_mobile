@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Card, Container, HeaderContainer, Favicon, IconBackground, CredentialsContainer, CredentialsText, Text } from "./styles";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Icon, Stack } from 'native-base';
+import { Stack } from 'native-base';
 
 import { CustomButton } from "../CustomButton";
 
@@ -50,7 +49,7 @@ export function CardPassword({ title, login, password, url, edit, remove }: Card
           <CustomButton
             color="green"
             width="40px"
-            height="35px"
+            height="25px"
             onPress={edit}
             icon={{
               icon: 'edit',
@@ -60,7 +59,7 @@ export function CardPassword({ title, login, password, url, edit, remove }: Card
           <CustomButton
             color="red"
             width="40px"
-            height="35px"
+            height="25px"
             onPress={remove}
             icon={{
               icon: 'delete',

@@ -11,7 +11,7 @@ import { PageBody } from "../../components/PageBody";
 import { PageContainer } from "../../components/PageContainer";
 import { CardPasswordFolderSkeleton } from "../../components/CardsSkeleton";
 
-import { Container, Spacing } from "./styles";
+import { Container, RemoveText, Spacing } from "./styles";
 
 import { RootStackParamList } from "../../models/rootStackParamList";
 
@@ -19,7 +19,7 @@ import { useFolder } from "../../contexts/useFolder";
 import { CustomModal } from "../../components/CustomModal";
 import { CustomInput } from "../../components/CustomInput";
 
-import { useAuth } from "../../contexts/useAuth";
+import { Folder } from "../../models/folder";
 
 type DashboardProps = StackNavigationProp<RootStackParamList>;
 
@@ -30,33 +30,52 @@ type FormData = {
 
 export default function Dashboard() {
   const navigation = useNavigation<DashboardProps>();
-  const { signOut } = useAuth();
-  const { folders, loadFolders, createFolder, folderLoading } = useFolder();
+  const { folders, loadFolders, createFolder, editFolder, deleteFolder, folderLoading, folderPromiseLoading } = useFolder();
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalLoading, setModalLoading] = useState(false);
+  const [currentFolder, setCurrentFolder] = useState<Folder>();
+
+  const [modalCEOpen, setModalCEOpen] = useState(false);
+  const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
+
+  const [modalType, setModalType] = useState('create' || 'edit');
 
   useEffect(() => {
     loadFolders();
   }, [])
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const { control, handleSubmit, setValue, reset, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       title: '',
       description: ''
     }
   })
 
-  const onSubmit = async (data: FormData) => {
-    setModalLoading(true);
+  useEffect(() => {
+    if (currentFolder) {
+      setValue('title', currentFolder.title);
+      setValue('description', currentFolder.description);
+    }
+  }, [currentFolder])
+
+  const onCreate = async (data: FormData) => {
     createFolder(data.title, data.description);
-    setModalOpen(false);
-    setModalLoading(false);
-    reset();
+    handleCloseModal();
+  };
+
+  const onEdit = async (data: FormData) => {
+    editFolder(data.title, data.description, String(currentFolder?._id));
+    handleCloseModal();
+  };
+
+  const onDelete = async (data: FormData) => {
+    deleteFolder(String(currentFolder?._id));
+    setCurrentFolder({} as Folder);
+    setModalDeleteOpen(false);
   };
 
   function handleCloseModal() {
-    setModalOpen(false);
+    setModalCEOpen(false);
+    setCurrentFolder({} as Folder);
     reset();
   }
 
@@ -66,7 +85,10 @@ export default function Dashboard() {
         <CustomButton
           title="Adicionar"
           color="green"
-          onPress={() => setModalOpen(true)}
+          onPress={() => {
+            setModalType('create');
+            setModalCEOpen(true);
+          }}
           icon={{
             icon: 'add'
           }}
@@ -74,7 +96,7 @@ export default function Dashboard() {
         <Spacing />
         <ScrollView persistentScrollbar={true}>
           {folderLoading ?
-            <CardPasswordFolderSkeleton repeat={5} />
+            <CardPasswordFolderSkeleton repeat={3} />
             :
             <Container>
               <Stack space={4} width="100%">
@@ -82,7 +104,17 @@ export default function Dashboard() {
                   <CardPasswordFolder
                     key={key}
                     title={folder.title}
+                    description={folder.description}
                     onPress={() => navigation.navigate('Credentials', { _id: folder._id, title: folder.title })}
+                    edit={() => {
+                      setCurrentFolder(folder);
+                      setModalType('edit');
+                      setModalCEOpen(true);
+                    }}
+                    remove={() => {
+                      setCurrentFolder(folder);
+                      setModalDeleteOpen(true);
+                    }}
                   />
                 ))}
               </Stack>
@@ -91,13 +123,16 @@ export default function Dashboard() {
         </ScrollView>
       </PageBody>
 
+      {/* MODAL CRIANDO/EDITANDO PASTA: INICIO */}
       <CustomModal
-        title="Criando Pasta"
-        isOpen={modalOpen}
+        title={modalType === 'create' ? "Criando Pasta" : "Editando " + currentFolder?.title}
+        isOpen={modalCEOpen}
         onClose={handleCloseModal}
-        onPress={handleSubmit(onSubmit)}
-        isLoading={modalLoading}
+        onPress={modalType === 'create' ? handleSubmit(onCreate) : handleSubmit(onEdit)}
+        isLoading={folderPromiseLoading}
         button={{
+          text: modalType === 'create' ? 'Criar' : 'Editar',
+          loadingText: modalType === 'create' ? 'Criando...' : 'Editando...',
           color: 'green'
         }}
       >
@@ -154,6 +189,29 @@ export default function Dashboard() {
 
         </Stack>
       </CustomModal>
+      {/* MODAL CRIANDO/EDITANDO PASTA: FIM */}
+
+      {/* MODAL EXCLUINDO SENHA: INCIO */}
+      <CustomModal
+        title={"Excluindo " + currentFolder?.title}
+        isOpen={modalDeleteOpen}
+        onClose={() => setModalDeleteOpen(false)}
+        onPress={handleSubmit(onDelete)}
+        isLoading={folderPromiseLoading}
+        button={{
+          text: 'Excluir',
+          loadingText: 'Excluindo...',
+          color: 'red'
+        }}
+      >
+        <RemoveText>Você realmente deseja excluir {currentFolder?.title}? Essa ação não poderá ser desfeita.</RemoveText>
+      </CustomModal>
+      {/* MODAL EXCLUINDO SENHA: FIM */}
+
     </PageContainer>
   )
+}
+
+function deleteFolder(title: string, description: string, arg2: string) {
+  throw new Error("Function not implemented.");
 }

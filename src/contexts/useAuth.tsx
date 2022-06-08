@@ -21,6 +21,9 @@ interface AuthContextData {
     _id: string,
     token: string
   ) => void,
+  updateSession: (
+    sessionData: Session
+  ) => void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -48,47 +51,49 @@ export function AuthProvider({ ...props }) {
 
   async function signIn(email: string, password: string) {
     const response = await publicAPI.post<ResponseSignIn>("user/login", { email, password });
-    if (response.data) {
-      setSession({
-        user: {
-          _id: response.data.userWithRefreshToken._id,
-          name: response.data.userWithRefreshToken.name,
-        },
-        refreshToken: {
-          _id: response.data.userWithRefreshToken.refreshToken._id,
-          expiresIn: response.data.userWithRefreshToken.refreshToken.expiresIn
-        },
-        token: response.data.token
-      })
 
-      await AsyncStorage.setItem("auth-session", JSON.stringify({
-        user: {
-          _id: response.data.userWithRefreshToken._id,
-          name: response.data.userWithRefreshToken.name,
-        },
-        refreshToken: {
-          _id: response.data.userWithRefreshToken.refreshToken._id,
-          expiresIn: response.data.userWithRefreshToken.refreshToken.expiresIn
-        },
-        token: response.data.token
-      }));
+    const userResponse : Session = {
+      user: {
+        _id: response.data.userWithRefreshToken._id,
+        name: response.data.userWithRefreshToken.name,
+        email: response.data.userWithRefreshToken.email,
+        passwordReminderTip: response.data.userWithRefreshToken.passwordReminderTip,
+        phoneNumber: response.data.userWithRefreshToken.phoneNumber
+      },
+      refreshToken: {
+        _id: response.data.userWithRefreshToken.refreshToken._id,
+        expiresIn: response.data.userWithRefreshToken.refreshToken.expiresIn
+      },
+      token: response.data.token
+    }
+
+    if (response.data) {
+      setSession(userResponse)
+
+      await AsyncStorage.setItem("auth-session", JSON.stringify(userResponse));
     }
 
     setLoading(false);
+
     return response;
   }
 
   async function signOut() {
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     await AsyncStorage.clear();
     setSession(undefined);
+    setLoading(false);
   }
-
 
   async function updateToken(expiresIn: number, _id: string, token: string) {
     const newData : Session = {
       user: {
         _id: String(session?.user._id),
         name: String(session?.user.name),
+        email: String(session?.user.email),
+        passwordReminderTip: String(session?.user.passwordReminderTip),
+        phoneNumber: String(session?.user.phoneNumber)
       },
       refreshToken: {
         _id: _id,
@@ -101,9 +106,29 @@ export function AuthProvider({ ...props }) {
     setSession(newData);
   }
 
+  async function updateSession(sessionData: Session){
+    const newData : Session = {
+      user: {
+        _id: String(session?.user._id),
+        name: sessionData.user.name,
+        email: sessionData.user.email,
+        passwordReminderTip: sessionData.user.passwordReminderTip,
+        phoneNumber: sessionData.user.phoneNumber
+      },
+      refreshToken: {
+        _id: String(session?.refreshToken._id),
+        expiresIn: Number(session?.refreshToken.expiresIn)
+      },
+      token: String(session?.token)
+    }
+
+    await AsyncStorage.setItem("auth-session", JSON.stringify(newData));
+    setSession(newData);
+  }
+
   return (
     <AuthContext.Provider
-      value={{ signed: !!session, session, loading, signIn, signOut, updateToken }}
+      value={{ signed: !!session, session, loading, signIn, signOut, updateToken, updateSession }}
     >
       {props.children}
     </AuthContext.Provider>

@@ -7,7 +7,7 @@ export const CardPasswordFolder = styled(Skeleton).attrs({
   startColor: colors.grayLight
 })`
   width: 100%;
-  height: 55px;
+  height: 80px;
   border-radius: 50px;
 `
 

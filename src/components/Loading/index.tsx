@@ -11,7 +11,7 @@ export default function Loading() {
           color="primary.500"
         />
         <Heading color="white" fontSize="md">
-          Entrando...
+          Carregando...
         </Heading>
       </Stack>
     </Container>

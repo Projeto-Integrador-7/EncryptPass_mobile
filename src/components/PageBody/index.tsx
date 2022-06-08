@@ -1,22 +1,21 @@
 import React from "react";
-import { IconButton, Stack } from "native-base";
+import { IconButton, Stack, View } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { TitleAndBackBtn, Container, TextContainer, Title } from "./styles";
+import { TitleAndBackBtn, Container, TextContainer, Title, Description } from "./styles";
 
 interface PageBodyProps {
   title: string;
+  description?: string;
   children: React.ReactNode;
   marginBottom?: boolean;
   back?: boolean;
   onPress?: () => void;
 }
 
-export function PageBody({ title, children, marginBottom, back, onPress }: PageBodyProps) {
+export function PageBody({ title, description, children, marginBottom, back, onPress }: PageBodyProps) {
   return (
-    <Container
-      marginBottom={marginBottom === false && '0px' || '90px'}
-    >
+    <Container marginBottom={marginBottom === false && '0px' || '85px'}>
       <TextContainer>
         {back ?
           <TitleAndBackBtn>
@@ -38,7 +37,10 @@ export function PageBody({ title, children, marginBottom, back, onPress }: PageB
             </Stack>
           </TitleAndBackBtn>
           :
-          <Title>{title}</Title>
+          <View>
+            <Title>{title}</Title>
+            {description && <Description>{description}</Description>} 
+          </View>
         }
       </TextContainer>
       {children}

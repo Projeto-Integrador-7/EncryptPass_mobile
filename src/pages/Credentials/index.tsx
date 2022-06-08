@@ -5,6 +5,8 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from "@expo/vector-icons";
 import { Icon, Stack } from 'native-base';
 import { Controller, useForm } from 'react-hook-form';
+import { useToast } from "native-base";
+
 import { Container, RemoveText, Spacing } from './styles';
 
 import { PageBody } from "../../components/PageBody";
@@ -20,8 +22,8 @@ import { RootStackParamList } from "../../models/rootStackParamList";
 import { Credentials } from '../../models/credentials';
 
 import { useAuth } from '../../contexts/useAuth';
+
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { useToast } from "native-base";
 
 type CredentialsPageProps = StackNavigationProp<RootStackParamList, 'Credentials'>;
 
@@ -142,7 +144,6 @@ export default function CredentialsFolderView() {
 
       let elementIndex = credentials.findIndex(item => item._id === currentCredential?._id);
 
-
       let updateCredentials = [...credentials];
       updateCredentials[elementIndex] = response.data.credentials
 
@@ -225,7 +226,6 @@ export default function CredentialsFolderView() {
     setShowPassword(!showPassword)
   }
 
-
   return (
     <PageContainer>
       <PageBody
@@ -279,7 +279,7 @@ export default function CredentialsFolderView() {
 
       </PageBody>
 
-      {/* MODAL CRIANDO/EDITANDO SENHA: INCIO */}
+      {/* MODAL CRIANDO/EDITANDO SENHA: INICIO */}
       <CustomModal
         title={modalType === 'create' ? "Criando Senha" : "Editando " + currentCredential?.title}
         isOpen={modalCEOpen}

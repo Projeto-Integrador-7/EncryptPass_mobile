@@ -48,7 +48,7 @@ export const CheckB = styled(Checkbox).attrs({
 
 export const ButtonContainer = styled.View`
   margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `
 
 export const PasswordField = styled.View`

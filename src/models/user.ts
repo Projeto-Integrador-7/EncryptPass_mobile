@@ -14,5 +14,6 @@ export interface User {
 
 export interface ResponseSignIn {
   userWithRefreshToken: User;
-  token: string
+  token: string;
+  Sucesso: string;
 }

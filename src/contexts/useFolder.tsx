@@ -10,10 +10,19 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 interface FolderContextData {
   folders: Folder[];
   folderLoading: boolean;
+  folderPromiseLoading: boolean;
   loadFolders: () => void;
   createFolder(
     title: string,
     description: string
+  ): Promise<void>;
+  editFolder(
+    title: string,
+    description: string,
+    folder_id: string
+  ): Promise<void>;
+  deleteFolder(
+    folder_id: string
   ): Promise<void>;
 }
 
@@ -26,6 +35,7 @@ export function FolderProvider({ ...props }) {
 
   const [folders, setFolders] = useState<Folder[]>([]);
   const [folderLoading, setfolderLoading] = useState(true);
+  const [folderPromiseLoading, setFolderPromiseLoading] = useState(false);
 
   async function loadFolders() {
     const response = await api.get(`folder/${session?.user._id}/findAll`);
@@ -34,6 +44,7 @@ export function FolderProvider({ ...props }) {
   }
 
   async function createFolder(title: string, description: string) {
+    setFolderPromiseLoading(true);
     try {
       const response = await api.post(`folder/${session?.user._id}/create`, { title, description });
       const { folder } = response.data;
@@ -66,11 +77,88 @@ export function FolderProvider({ ...props }) {
         }
       });
     }
+    setFolderPromiseLoading(false);
+  }
+
+  async function editFolder(title: string, description: string, folder_id: string) {
+    setFolderPromiseLoading(true);
+    try {
+      const response = await api.put(`folder/${session?.user._id}/update/${folder_id}`, { title, description });
+
+      let elementIndex = folders.findIndex(item => item._id === folder_id);
+
+      let updateFolders = [...folders];
+      updateFolders[elementIndex] = response.data.folder
+
+      setFolders(updateFolders)
+
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="success"
+              description={response.data.Sucesso}
+            />
+          )
+        }
+      });
+
+    } catch (res: any) {
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="error"
+              description={res.response.data.Erro}
+            />
+          )
+        }
+      });
+    }
+    setFolderPromiseLoading(false);
+  }
+
+  async function deleteFolder(folder_id: string) {
+    setFolderPromiseLoading(true);
+    try {
+      const response = await api.delete(`folder/${session?.user._id}/delete/${folder_id}`);
+
+      let elementIndex = folders.findIndex(item => item._id === folder_id);
+
+      let updateFolders = [...folders];
+      updateFolders.splice(elementIndex, 1);
+
+      setFolders(updateFolders)
+
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="success"
+              description={response.data.Sucesso}
+            />
+          )
+        }
+      });
+
+    } catch (res: any) {
+      toast.show({
+        render: () => {
+          return (
+            <CustomToast
+              type="error"
+              description={res.response.data.Erro}
+            />
+          )
+        }
+      });
+    }
+    setFolderPromiseLoading(false);
   }
 
   return (
     <FolderContext.Provider
-      value={{ folders, folderLoading, loadFolders, createFolder }}
+      value={{ folders, folderLoading, folderPromiseLoading, loadFolders, createFolder, editFolder, deleteFolder}}
     >
       {props.children}
     </FolderContext.Provider>
