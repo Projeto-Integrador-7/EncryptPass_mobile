@@ -1,6 +1,4 @@
-import { FormControl } from "native-base";
 import styled from "styled-components/native";
-
 import colors from "../../styles/colors";
 
 export const Container = styled.KeyboardAvoidingView`
@@ -11,27 +9,21 @@ export const Container = styled.KeyboardAvoidingView`
   padding: 50px;
 `
 
-export const WelcomeContainer = styled.View`
+export const FormContainer = styled.View`
+  width: 100%;
+`
+
+export const WarningContainer = styled.View`
   margin: 80px 0 40px 0;
 `
 
-export const WelcomeText = styled.Text`
+export const WarningText = styled.Text`
   text-align: center;
   color: ${colors.white};
-  font-size: 18px;
-`
-
-export const FormContainer = styled.View`
-  width: 100%;
+  font-size: 14px;
 `
 
 export const ButtonContainer = styled.View`
   width: 100%;
   padding-top: 40px;
 `
-export const ForgottenPassword = styled.Text`
-  padding-top: 15px;
-  color: ${colors.white};
-  text-align: right;
-`
-

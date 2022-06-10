@@ -52,7 +52,7 @@ export function AuthProvider({ ...props }) {
   async function signIn(email: string, password: string) {
     const response = await publicAPI.post<ResponseSignIn>("user/login", { email, password });
 
-    const userResponse : Session = {
+    const userResponse: Session = {
       user: {
         _id: response.data.userWithRefreshToken._id,
         name: response.data.userWithRefreshToken.name,
@@ -67,13 +67,8 @@ export function AuthProvider({ ...props }) {
       token: response.data.token
     }
 
-    if (response.data) {
-      setSession(userResponse)
-
-      await AsyncStorage.setItem("auth-session", JSON.stringify(userResponse));
-    }
-
-    setLoading(false);
+    setSession(userResponse)
+    await AsyncStorage.setItem("auth-session", JSON.stringify(userResponse));
 
     return response;
   }
@@ -87,7 +82,7 @@ export function AuthProvider({ ...props }) {
   }
 
   async function updateToken(expiresIn: number, _id: string, token: string) {
-    const newData : Session = {
+    const newData: Session = {
       user: {
         _id: String(session?.user._id),
         name: String(session?.user.name),
@@ -106,8 +101,8 @@ export function AuthProvider({ ...props }) {
     setSession(newData);
   }
 
-  async function updateSession(sessionData: Session){
-    const newData : Session = {
+  async function updateSession(sessionData: Session) {
+    const newData: Session = {
       user: {
         _id: String(session?.user._id),
         name: sessionData.user.name,

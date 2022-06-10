@@ -37,7 +37,7 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
 
-  const { control, handleSubmit, reset, watch, formState: { errors } } = useForm<FormData>({
+  const { control, handleSubmit, reset, watch, trigger, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       name: '',
       email: '',
@@ -69,6 +69,23 @@ export default function SignUp() {
 
   function handleBackStep() {
     setStep(step - 1);
+  }
+  
+  async function handleNext() {
+    let isValid = false;
+
+    switch (step) {
+      case 0:
+        isValid = await trigger(['name', 'email']);
+        break;
+      case 1:
+        isValid = await trigger(['password', 'password_repeat']);
+        break;
+    }
+
+    if (isValid) {
+      handleNextStep();
+    }
   }
 
   const onSubmit = async (data: FormData) => {
@@ -231,7 +248,7 @@ export default function SignUp() {
                     },
                     pattern: {
                       value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-                      message: "A senha deve conter pelo menos 1 letra maíuscula, 1 letra minuscula e 1 caractere escpecial."
+                      message: "A senha deve conter pelo menos: 1 letra maíuscula, 1 letra minuscula e 1 caractere especial."
                     }
                   }}
                 />
@@ -271,7 +288,7 @@ export default function SignUp() {
                   render={({ field: { onChange, value } }) => (
                     <CustomInput
                       placeholder="Dica de senha (Opcional)"
-                      type="password"
+                      type="text"
                       value={value}
                       onChangeText={onChange}
                       isInvalid={Boolean(errors.passwordReminderTip)}
@@ -290,7 +307,7 @@ export default function SignUp() {
             <CustomButton
               title={step > 0 ? "Cadastrar" : "Avançar"}
               color="green"
-              onPress={step > 0 ? handleSubmit(onSubmit) : handleNextStep}
+              onPress={step > 0 ? handleSubmit(onSubmit) : handleNext}
             />
             <CustomButton
               title={step < 1 ? "Cancelar" : "Voltar"}

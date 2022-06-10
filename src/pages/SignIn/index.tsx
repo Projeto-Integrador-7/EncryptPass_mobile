@@ -4,13 +4,15 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
+import { useToast } from "native-base";
 
 import { CustomInput } from "../../components/CustomInput";
 import { CustomButton } from "../../components/CustomButton";
+import { CustomToast } from "../../components/CustomToast";
 
 import { useAuth } from '../../contexts/useAuth';
 
-import { Container, WelcomeContainer, WelcomeText, FormContainer, ButtonContainer, ValidationText } from "./styles"
+import { Container, WelcomeContainer, WelcomeText, FormContainer, ButtonContainer, ForgottenPassword } from "./styles"
 
 import { RootStackParamList } from "../../models/rootStackParamList";
 
@@ -23,6 +25,7 @@ type FormData = {
 
 export default function SignIn() {
   const { signIn } = useAuth();
+  const toast = useToast();
   const navigation = useNavigation<SignInProps>();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -33,22 +36,36 @@ export default function SignIn() {
     return unsubscribe;
   }, [navigation])
 
-  const { control, handleSubmit, reset, watch, formState: { errors } } = useForm<FormData>({
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       email: '',
       password: ''
     }
   })
 
-
   function handleShowPassword() {
     setShowPassword(!showPassword)
   }
 
-  const onSubmit = async (data: FormData) => { {
-    const response = signIn(data.email, data.password);
-    console.log(signIn(data.email, data.password));
-  }}
+  const onSubmit = async (data: FormData) => {
+    {
+      try {
+        await signIn(data.email, data.password);
+      } catch (err: any) {
+        toast.show({
+          render: () => {
+            return (
+              <CustomToast
+                type="error"
+                description={err.response.data.Erro}
+              />
+            )
+          }
+        });
+      }
+
+    }
+  }
 
   return (
     <Container>
@@ -110,6 +127,11 @@ export default function SignIn() {
             }}
           />
         </Stack>
+        <ForgottenPassword
+          onPress={() => navigation.navigate('ResetPassword')}
+        >
+          Esqueceu a senha?
+        </ForgottenPassword>
       </FormContainer>
       <ButtonContainer>
         <Stack space={4} width="100%">

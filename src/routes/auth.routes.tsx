@@ -5,6 +5,7 @@ import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/
 import Welcome from '../pages/Welcome';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
+import ResetPassword from '../pages/ResetPassword';
 
 import { RootStackParamList } from '../models/rootStackParamList';
 
@@ -22,6 +23,7 @@ export default function AuthRoutes() {
       <AuthStack.Screen name="Welcome" component={Welcome} />
       <AuthStack.Screen name="SignIn" component={SignIn} />
       <AuthStack.Screen name="SignUp" component={SignUp} />
+      <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
     </AuthStack.Navigator>
   )
 }

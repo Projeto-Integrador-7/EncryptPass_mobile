@@ -17,5 +17,6 @@ export type RootStackParamList = {
   Profile: undefined;
   EditProfile: undefined;
   ChangePassword: undefined;
+  ResetPassword: undefined;
   Tabs: RootTabParamList;
 }

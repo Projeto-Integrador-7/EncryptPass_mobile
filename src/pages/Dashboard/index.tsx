@@ -10,14 +10,14 @@ import { CustomButton } from "../../components/CustomButton";
 import { PageBody } from "../../components/PageBody";
 import { PageContainer } from "../../components/PageContainer";
 import { CardPasswordFolderSkeleton } from "../../components/CardsSkeleton";
+import { CustomModal } from "../../components/CustomModal";
+import { CustomInput } from "../../components/CustomInput";
 
 import { Container, RemoveText, Spacing } from "./styles";
 
 import { RootStackParamList } from "../../models/rootStackParamList";
 
 import { useFolder } from "../../contexts/useFolder";
-import { CustomModal } from "../../components/CustomModal";
-import { CustomInput } from "../../components/CustomInput";
 
 import { Folder } from "../../models/folder";
 

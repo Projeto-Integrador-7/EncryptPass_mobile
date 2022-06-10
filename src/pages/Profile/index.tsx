@@ -14,7 +14,7 @@ type ProfilePageProps = StackNavigationProp<RootStackParamList, 'Profile'>;
 
 export default function Profile() {
   const navigation = useNavigation<ProfilePageProps>();
-  const { session, signOut } = useAuth()
+  const { session, signOut } = useAuth();
 
   const person_name = session?.user.name ? session.user.name.split(' ') : '';
 
