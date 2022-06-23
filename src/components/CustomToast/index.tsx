@@ -3,11 +3,12 @@ import { Box } from "native-base";
 
 interface CustomToastProps {
   description: string;
-  type: 'success' | 'error';
+  type: 'success' | 'warning' | 'error';
 }
 
 const toastColors = {
   success: "green.500",
+  warning: "yellow.500",
   error: "red.500"
 }
 

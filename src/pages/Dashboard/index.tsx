@@ -58,8 +58,13 @@ export default function Dashboard() {
   }, [currentFolder])
 
   const onCreate = async (data: FormData) => {
-    createFolder(data.title, data.description);
-    handleCloseModal();
+    try {
+      createFolder(data.title, data.description);
+      handleCloseModal();
+    } catch (err) {
+      
+    }
+    
   };
 
   const onEdit = async (data: FormData) => {
