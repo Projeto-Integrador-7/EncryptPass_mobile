@@ -6,9 +6,14 @@ export interface User {
   passwordReminder: string;
   passwordReminderTip: string;
   phoneNumber: string;
+  refreshToken: {
+    expiresIn: number;
+    _id: string;
+  }
 }
 
 export interface ResponseSignIn {
-  userWithRefreshToken?: User;
-  token: string
+  userWithRefreshToken: User;
+  token: string;
+  Sucesso: string;
 }

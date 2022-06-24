@@ -8,7 +8,7 @@ import { CustomButton } from "../../components/CustomButton";
 
 import { Container } from "./styles";
 
-import { RootStackParamList } from "../../models/RootStackParamList";
+import { RootStackParamList } from "../../models/rootStackParamList";
 
 type WelcomeProps = StackNavigationProp<RootStackParamList, 'Welcome'>;
 

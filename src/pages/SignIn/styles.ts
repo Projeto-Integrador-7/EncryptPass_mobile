@@ -29,8 +29,9 @@ export const ButtonContainer = styled.View`
   width: 100%;
   padding-top: 40px;
 `
-
-export const ValidationText = styled(FormControl.ErrorMessage).attrs({
-  marginTop: '-8px'
-})``
+export const ForgottenPassword = styled.Text`
+  padding-top: 15px;
+  color: ${colors.white};
+  text-align: right;
+`
 

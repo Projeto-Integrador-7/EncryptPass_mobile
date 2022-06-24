@@ -6,11 +6,12 @@ import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/
 
 import Dashboard from '../pages/Dashboard';
 import PasswordGenerator from '../pages/PasswordGenerator';
-import CreateFolder from '../pages/CreateFolder';
 import Credentials from '../pages/Credentials';
-import CreateFolderPassword from '../pages/CreateFolderPassword';
+import Profile from '../pages/Profile';
+import EditProfile from '../pages/EditProfile';
+import ChangePassword from '../pages/ChangePassword';
 
-import { RootStackParamList } from '../models/RootStackParamList';
+import { RootStackParamList } from '../models/rootStackParamList';
 
 import colors from '../styles/colors';
 
@@ -62,12 +63,12 @@ function Tabs() {
         }}
       />
       <AppTab.Screen
-        name="Settings"
-        component={Dashboard}
+        name="Profile"
+        component={Profile}
         options={{
-          tabBarLabel: 'Configurações',
+          tabBarLabel: 'Perfil',
           tabBarIcon: ({ color }) => (
-            <Ionicons name="settings" size={28} color={color} />
+            <Ionicons name="person" size={28} color={color} />
           )
         }}
       />
@@ -88,9 +89,9 @@ export default function AppRoutes() {
         }}
       >
         <AuthStack.Screen name="Tabs" component={Tabs} />
-        <AuthStack.Screen name="CreateFolder" component={CreateFolder} />
         <AuthStack.Screen name="Credentials" component={Credentials} />
-        <AuthStack.Screen name="CreateFolderPassword" component={CreateFolderPassword} />
+        <AuthStack.Screen name="EditProfile" component={EditProfile} />
+        <AuthStack.Screen name="ChangePassword" component={ChangePassword} />
       </AuthStack.Navigator>
     </NavigationContainer>
   )
